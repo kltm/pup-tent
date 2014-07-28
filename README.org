@@ -5,7 +5,8 @@
 
 * Overview
 
-  Pup Tent is 
+  Pup Tent is a femto-framework for template (mustache) and static
+  content delivery for Node.js web apps.
 
 ** Usage
 
@@ -13,5 +14,13 @@
 var pup_tent = require('pup-tent');
   #+END_SRC
 
+*** Special template variables
+
+ - pup_tent_css_libraries
+ - pup_tent_js_libraries
+ - pup_tent_js_variables
+ - pup_tent_content
+
 ** API
-   More or less current API documentation can be found [[https://kltm.github.io/pup-tent/][here]].
+   More or less current API documentation (using Natural Docs) can be
+   found [[https://kltm.github.io/pup-tent/][here]].
