@@ -1,0 +1,17 @@
+#+TITLE: PUP TENT README
+#+Options: num:nil
+#+STARTUP: odd
+#+Style: <style> h1,h2,h3 {font-family: arial, helvetica, sans-serif} </style>
+
+* Overview
+
+  Pup Tent is 
+
+** Usage
+
+  #+BEGIN_SRC javascript
+var pup_tent = require('pup-tent');
+  #+END_SRC
+
+** API
+   More or less current API documentation can be found [[https://kltm.github.io/pup-tent/][here]].
