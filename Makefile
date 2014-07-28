@@ -29,6 +29,7 @@ PUP_TENT_VERSION ?= $(PUP_TENT_BASE_VERSION).$(PUP_TENT_PATCH_LEVEL)$(PUP_TENT_V
 all:
 	@echo "Using JS engine: $(TEST_JS)"
 	@echo "Tests defined: $(TESTS)"
+	@echo "Current development version: $(PUP_TENT_VERSION)"
 	@echo "See README.org in this directory for more details."
 
 ###
@@ -59,18 +60,6 @@ docs:
 	naturaldocs --rebuild-output --input lib/ --project docs/.naturaldocs_project/ --output html docs/
 
 ###
-### Create exportable JS bundles.
-###
-
-.PHONY: bundle
-bundle:
-	./scripts/release-js.pl -v -i scripts/release-file-map.txt -o staging/bbopx.js -n bbopx -d lib/bbopx -r $(PUP_TENT_VERSION)
-
-.PHONY: bundle-uncompressed
-bundle-uncompressed: update-external
-	./scripts/release-js.pl -v -u -i scripts/release-file-map.txt -o staging/bbopx.js -n bbopx -d lib/bbopx -r $(PUP_TENT_VERSION)
-
-###
 ### Build version control.
 ###
 
@@ -93,8 +82,8 @@ patch-incr:
 ## Steps forward the patch level after every release--this is required
 ## to really use npm.
 .PHONY: npm
-npm: bundle
-	./scripts/release-npm.pl -v -i lib/bbopx.js -o npm/pup-tent -r $(PUP_TENT_VERSION)
+npm:
+	./scripts/release-npm.pl -v -i lib/pup-tent.js -o npm/pup-tent -r $(PUP_TENT_VERSION)
 	npm publish npm/pup-tent
 	make patch-incr
 
@@ -103,4 +92,4 @@ npm: bundle
 ###
 
 .PHONY: release
-release: bundle npm docs
+release: npm docs
