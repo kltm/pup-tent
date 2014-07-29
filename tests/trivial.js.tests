@@ -4,14 +4,41 @@
 
 var assert = require('assert');
 
-var pup_tent = require('pup-tent')(['a.mustache'],
-				   ['tests/rsrc1', 'tests/rsrc2']);
-assert.ok(pup_tent, 'constructor okay');
+// Trivial tests for explicit file mentions in the constructor.
+(function(){
 
-var cl = pup_tent.cached_list();
-assert.equal(cl.length, 1, 'one item');
+    var pup_tent = require('pup-tent')(['tests/rsrc1', 'tests/rsrc2'],
+				       ['trivial.tmpl']);
+				   
+    assert.ok(pup_tent, 'constructor okay');
 
-assert.equal(pup_tent.get('foo'), null, 'nothing for foo');
-assert.equal(pup_tent.get('a.mustache'), 'name: {{ name }}', 'tmpl string');
+    var cl = pup_tent.cached_list();
+    assert.equal(cl.length, 1, 'one item');
+    
+    assert.equal(pup_tent.get('foo'), null, 'nothing for foo');
+    assert.equal(pup_tent.get('trivial.tmpl'), 'name: {{ name }}',
+		 'tmpl string');
+    
+    assert.equal(pup_tent.apply('trivial.tmpl', {name: 1}),
+		 'name: 1', 'name: 1');
+    
+})();
 
-assert.equal(pup_tent.apply('a.mustache', {name: 1}), 'name: 1', 'name: 1');
+// Trivial tests for file searching in the constructor.
+(function(){
+
+    var pup_tent = require('pup-tent')(['tests/rsrc1', 'tests/rsrc2']);
+				   
+    assert.ok(pup_tent, 'constructor okay');
+
+    var cl = pup_tent.cached_list();
+    assert.equal(cl.length, 1, 'one item');
+    
+    assert.equal(pup_tent.get('foo'), null, 'nothing for foo');
+    assert.equal(pup_tent.get('trivial.tmpl'), 'name: {{ name }}',
+		 'tmpl string');
+    
+    assert.equal(pup_tent.apply('trivial.tmpl', {name: 1}),
+		 'name: 1', 'name: 1');
+    
+})();

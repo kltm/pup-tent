@@ -16,13 +16,13 @@ var mustache = require('mustache');
  * Creates an instance of the Pup Tent femto-framework.
  *
  * Parameters:
- *    search_path_list - list of directories to search for static files (e.g. ['static', 'js', 'css', 'templates'])
- *    filename_list - *[optional]* list of static files (e.g. ['Login.js', 'login_content.tmpl'])
+ *    filename_list - list of files
+ *    search_path_list - *optional* list of directories to search for static files
  *
  * Returns:
  *    An instance of the Pup Tent femto-framework.
  */
-module.exports = function(search_path_list, filename_list){
+module.exports = function(filename_list, search_path_list){
 
     var each = us.each;
 
@@ -33,47 +33,20 @@ module.exports = function(search_path_list, filename_list){
 	js_libs: []
     };
 
-    // If we have a filename list, just look for those in out search
-    // paths. If we don't have a filename_list, just grab all of the
-    // files in the search path.
-    if( us.isArray(filename_list) ){
-    
-	each(filename_list, // e.g. ['Login.js', 'login_content.tmpl']
-	     function(filename){
-		 
-		 // Try to read from static and js.
-		 each(search_path_list, // e.g. ['static', 'js', ...]
-		      function(loc){
-			  var path = './' + loc + '/' + filename;
-			  //console.log('l@: ' + path);
-			  if( fs.existsSync(path) ){
-			      //console.log('found: ' + path);
-			      zcache[filename] = fs.readFileSync(path);
-			  }
-		      });
-	     });
-    }else{
-
-	// Try to read from static and js.
-	each(search_path_list, // e.g. ['static', 'js', ...]
-	     function(loc){
-		 var path = './' + loc;
-		 console.log('in loc: ' + loc);
-		 var files = fs.readdirSync(loc);
-		 each(files,
-		      function(file){
-			  // Get only files, not directories.
-			  console.log('found file: ' + file);
-			  var full_file = loc + '/' + file;
-			  var stats = fs.statSync(full_file);
-			  if( stats.isFile() ){
-			      if( fs.existsSync(full_file) ){
-				  zcache[file] = fs.readFileSync(full_file);
-			      }
-			  }
-		      });
-	     });
-    }
+    each(filename_list, // e.g. ['Login.js', 'login_content.tmpl'],
+	 function(filename){
+	     
+	     // Try to read from static and js.
+	     each(search_path_list, //['static', 'js', 'css', 'templates'],
+		  function(loc){
+		      var path = './' + loc + '/' + filename;
+		      //console.log('l@: ' + path);
+		      if( fs.existsSync(path) ){
+			  //console.log('found: ' + path);
+			  zcache[filename] = fs.readFileSync(path);
+		      }
+		  });
+	 });
 
     // Permanently push an item or a list onto a list.
     function _add_to(stack, item_or_list){
