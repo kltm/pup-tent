@@ -5,18 +5,12 @@
 ####
 
 TESTS = \
- $(wildcard lib/*.js.tests)
+ $(wildcard tests/*.js.tests)
 
 ## Test JS environment.
-TEST_JS = rhino
-## Some tests require things like "-opt -1" in some cases (big GO tests).
-## rhino needs this for the big GO tree in model.tests.go.js.
-## Java BUG, so interpretation is forced.
-## See: http://coachwei.sys-con.com/node/676073/mobile
-#TEST_JS_FLAGS = -modules external/bbop.js -modules staging/bbopx.js -opt -1
-
-## Other JS environments.
-NODE_JS ?= /usr/bin/node
+TEST_JS_ENV = NODE_PATH="./lib"
+TEST_JS = node
+TEST_JS_FLAGS = 
 
 ## Handle versioning. The patch level is automatically incremented on
 ## after every release.
@@ -38,10 +32,9 @@ all:
 
 .PHONY: test $(TESTS)
 test: $(TESTS)
-$(TESTS): bundle
+$(TESTS):
 	echo "trying: $@"
-	$(TEST_JS) $(TEST_JS_FLAGS) -f $(@D)/$(@F)
-#	cd $(@D) && $(TEST_JS) $(TEST_JS_FLAGS) -f $(@F)
+	$(TEST_JS_ENV) $(TEST_JS) $(TEST_JS_FLAGS) $(@D)/$(@F)
 
 ###
 ### Just the exit code results of the tests.

@@ -1,0 +1,13 @@
+////
+//// Some quick and dirty unit testing.
+////
+
+var assert = require('assert');
+
+var pup_tent = require('pup-tent')(['a.mustache'],
+				   ['tests/rsrc1', 'tests/rsrc2']);
+assert.ok(pup_tent, 'constructor okay');
+
+var cl = pup_tent.cached_list();
+assert.equal(cl.length, 1, 'one item');
+
