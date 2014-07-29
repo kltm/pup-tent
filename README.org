@@ -102,8 +102,6 @@ var output = pup_tent.render('content.tmpl', targs, 'frame.tmpl');
 </html>
   #+END_SRC
 
-*** Special template variables
-
 *** Special variables
 
     The special stack variables are:
