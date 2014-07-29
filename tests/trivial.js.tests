@@ -11,3 +11,7 @@ assert.ok(pup_tent, 'constructor okay');
 var cl = pup_tent.cached_list();
 assert.equal(cl.length, 1, 'one item');
 
+assert.equal(pup_tent.get('foo'), null, 'nothing for foo');
+assert.equal(pup_tent.get('a.mustache'), 'name: {{ name }}', 'tmpl string');
+
+assert.equal(pup_tent.apply('a.mustache', {name: 1}), 'name: 1', 'name: 1');

@@ -12,9 +12,9 @@
       "url": "http://github.com/kltm/pup-tent"
     },
     "keywords": [
-	"femto"
-	"framework"
-	"template",
+	"femto",
+	"framework",
+	"template"
     ],
     "engines": {"node" : ">=0.10.0"},
     "dependencies": {
