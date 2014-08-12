@@ -6,7 +6,7 @@
 * Overview
 
   Pup Tent is a femto-framework for template (Mustache) and static
-  content delivery for Node.js web apps.
+  content delivery for Node.js and RingoJS (beta) web apps.
 
   The idea is to quickly turn a pile of related JS, template, CSS, and
   static files into a whole coherent enough to deliver with a proper
