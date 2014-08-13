@@ -38,20 +38,23 @@ var assert = require('assert');
 			    {content: 'bar', title: 'foo'},
 			    'frame.tmpl');
     // console.log('html (l):\n', l);
-    // var expected = [
-    // 	'<html>',
-    // 	'  <head>',
-    // 	'    <title>foo</title>',
-    // 	'    ',
-    // 	'  </head>',
-    // 	'  <body>',
-    // 	'  bar',
-    // 	'  </body>',
-    // 	'</html>'
-    // ];
-    // var e = expected.join("\n");
-    //console.log('html (e):\n', e);
-    //assert.equal(l, e,  "inner and outer templates");
+    var expected = [
+    	'<html>',
+    	'  <head>',
+    	'    <title>foo</title>',
+    	'  </head>',
+    	'  <body>',
+    	'  bar',
+    	'  </body>',
+    	'</html>',
+    	''
+    ];
+    var e = expected.join("\n");
+    // console.log('html (e):\n', e);
+    // console.log('html (l):', l.length);
+    // console.log('html (e):', e.length);
+    assert.equal(l.length, e.length,  "inner and outer template lengths");
+    assert.equal(l, e,  "inner and outer templates");
     
 })();
 
@@ -68,20 +71,27 @@ var assert = require('assert');
 			    {content: 'bar', title: 'foo',
 			    'pup_tent_js_libraries': ['App.js']},
 			    'frame.tmpl');
-    //console.log('html (u):\n', u);
-    // var expected = [
-    // 	'<html>',
-    // 	'  <head>',
-    // 	'    <title>foo</title>',
-    // 	'    ',
-    // 	'  </head>',
-    // 	'  <body>',
-    // 	'  bar',
-    // 	'  </body>',
-    // 	'</html>'
-    // ];
-    // var e = expected.join("\n");
-    //console.log('html (e):\n', e);
-    //assert.equal(u, e,  "inner and outer templates");
+    // console.log('html (u):\n', u);
+    var expected = [
+    	'<html>',
+    	'  <head>',
+    	'    <title>foo</title>',
+	'    <link rel="stylesheet" type="text/css" href="bar.css">',
+	'    <script type="text/javascript">var foo = "bar";</script>',
+	'    <script type="text/javascript" src="foo.js"></script>',
+	'    <script type="text/javascript" src="App.js"></script>',
+    	'  </head>',
+    	'  <body>',
+    	'  bar',
+    	'  </body>',
+    	'</html>',
+	''
+    ];
+    var e = expected.join("\n");
+    // console.log('html (e):\n', e);
+    // console.log('html (u):', u.length);
+    // console.log('html (e):', e.length);
+    assert.equal(u.length, e.length,  "inner and outer template lengths");
+    assert.equal(u, e,  "inner and outer templates");
     
 })();
