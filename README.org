@@ -117,6 +117,25 @@ var output = pup_tent.render('content.tmpl', targs, 'frame.tmpl');
     - pup_tent_js_variables: list of name/value objects to convert to vaiables
     - pup_tent_content: meant for use in _base_tmpl_name_ to embed one template in another
 
+** Tests
+*** Node.js
+
+    Given the right environment, the tests can be easily run from the
+    command line using the Makefile.
+
+  #+BEGIN_SRC
+    make test
+  #+END_SRC    
+
+*** RingoJS
+
+    The RingoJS tests are not integrated with the Makefile (yet), but
+    can be run from the command line interface like:
+
+  #+BEGIN_SRC
+    ringo -m ./lib -m ./node_modules/underscore/ -m node_modules/mustache tests/full-tmpl.js.tests
+  #+END_SRC
+
 ** API
    More or less current API documentation (using Natural Docs) can be
    found [[https://kltm.github.io/pup-tent/][here]].
