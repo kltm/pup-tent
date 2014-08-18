@@ -1,6 +1,6 @@
 {
     "name": "pup-tent",
-    "version": "0.9.2",
+    "version": "0.9.3",
     "license": "BSD",
     "description": "File caching and template rendering femto-framework using mustache and some assumptions.",
     "author": {
@@ -21,8 +21,8 @@
     ],
     "engines": {"node" : ">=0.10.0"},
     "dependencies": {
-	"underscore": "latest",
-	"mustache": "latest"
+	"underscore": "~1.6.0",
+	"mustache": "~0.8.2"
     },
     "main": "./pup-tent.js"
 }
