@@ -95,3 +95,19 @@ var assert = require('assert');
     assert.equal(u, e,  "inner and outer templates");
     
 })();
+
+// Playing with the caching mechanism off: use_cache_p().
+(function(){
+
+    var pup_tent = require('pup-tent')(['tests/rsrc3']);
+    assert.ok(pup_tent, 'constructor okay, no cache call yet');
+
+    assert.equal(true, pup_tent.use_cache_p(), "default is to use the cache");
+    pup_tent.use_cache_p(false);
+    assert.equal(false, pup_tent.use_cache_p(), "caching now off");
+
+    var s = pup_tent.render('content.tmpl', {content: 'foo'});
+    assert.equal(s, 'foo',  "content only, using a filesystem re-read");
+    //console.log('html (s): ', s);
+
+})();
