@@ -21,8 +21,10 @@
 
 ** Usage
 
+*** The Basics (kicking the tires, lightly)
+
    There are other examples in the tests/ directory, but a full
-   example might look like this.
+   example (without using the cache) might look like this.
 
    Lets say you have the following files:
 
@@ -102,8 +104,76 @@ var output = pup_tent.render('content.tmpl', targs, 'frame.tmpl');
 </html>
   #+END_SRC
 
-*** Special variables
+You might notice that some of the files are not correctly "linking"
+if you view your page in a web browser. On to the next section!
 
+*** More Advanced (test drive)
+
+So far, we've just used it for some simple templating, but what if we
+want to use the integrated caching mechanism and use it in conjunction
+with something like express?
+
+A more full-bodied example might be:
+
+  #+BEGIN_SRC javascript
+var us = require('underscore');
+var express = require('express');
+var fs = require('fs');
+var mustache = require('mustache')
+var pup_tent = require('pup-tent')
+
+var app = express();
+
+//////
+/// FOLLOW THE EXAMPLE ABOVE FOR REDACTED STUFF HERE ///
+//////
+
+// Pretty much the same as before.
+app.get('/', function(req, res){
+    var targs = {
+	'title': 'Testing'
+    };
+    var output = pup_tent.render('content.tmpl', targs, 'frame.tmpl');
+    res.send(output);
+});
+
+// Cached static routes, using Pup Tent to easily deliver static docs.
+var js_re = /\.js$/;
+var css_re = /\.css$/;
+var html_re = /\.html$/;
+// Routes for all static cache items.
+us.each(pup_tent.cached_list(), function(thing){
+    var ctype = null;
+    if( js_re.test(thing) ){
+        ctype = 'text/javascript';
+    }else if( css_re.test(thing) ){
+        ctype = 'text/css';
+    }else if( html_re.test(thing) ){
+        ctype = 'text/html';
+    }
+    
+    // This will skip cached templates.
+    if( ctype !== null ){
+        app.get('/' + thing, function(req, res) {
+            res.setHeader('Content-Type', ctype);
+            res.send(pup_tent.get(thing) );
+        });
+    }
+});
+
+var server = app.listen(3333, function() {
+    console.log('Starting at http://localhost:' +
+		server.address().port);
+});
+  #+END_SRC javascript
+
+Since always caching can be a bit annoying when developing
+JavaScript/CSS heavy websites, there is also a use_cache_p() function
+that can be used to toggle whether Pup Tent returns to the filesystem
+every time or uses the internal cache. For more information about
+everything, see the API docs (linked at the end).
+
+*** Special variables
     The special stack variables are:
 
     - css_libs: will map to pup_tent_css_libraries
