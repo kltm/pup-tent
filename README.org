@@ -113,7 +113,7 @@ So far, we've just used it for some simple templating, but what if we
 want to use the integrated caching mechanism and use it in conjunction
 with something like express?
 
-A more full-bodied example might be:
+A more full-bodied example, using express as an example, might be:
 
   #+BEGIN_SRC javascript
 var us = require('underscore');
