@@ -141,8 +141,8 @@ app.get('/', function(req, res){
 var js_re = /\.js$/;
 var css_re = /\.css$/;
 var html_re = /\.html$/;
-// Routes for all static cache items.
-us.each(pup_tent.cached_list(), function(thing){
+// Routes for all static cache items at top-level.
+us.each(pup_tent.cached_list('flat'), function(thing){
     var ctype = null;
     if( js_re.test(thing) ){
         ctype = 'text/javascript';

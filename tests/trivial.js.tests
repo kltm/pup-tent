@@ -12,9 +12,12 @@ var assert = require('assert');
 				   
     assert.ok(pup_tent, 'constructor okay');
 
-    var cl = pup_tent.cached_list();
-    assert.equal(cl.length, 1, 'one item');
-    
+    //console.log(assert.equal(pup_tent.cached_list()));
+    assert.equal(pup_tent.cached_list().length, 2, 'two items (a)');
+    assert.equal(pup_tent.cached_list('all').length, 2, 'two items (b)');
+    assert.equal(pup_tent.cached_list('flat').length, 1, 'one item (a)');
+    assert.equal(pup_tent.cached_list('full').length, 1, 'one item (b)');
+
     assert.equal(pup_tent.get('foo'), null, 'nothing for foo');
     assert.equal(pup_tent.get('trivial.tmpl'), 'name: {{ name }}',
 		 'tmpl string');
@@ -31,9 +34,11 @@ var assert = require('assert');
 				   
     assert.ok(pup_tent, 'constructor okay');
 
-    var cl = pup_tent.cached_list();
-    assert.equal(cl.length, 1, 'one item');
-    
+    assert.equal(pup_tent.cached_list().length, 2, 'two items (a)');
+    assert.equal(pup_tent.cached_list('all').length, 2, 'two items (b)');
+    assert.equal(pup_tent.cached_list('flat').length, 1, 'one item (a)');
+    assert.equal(pup_tent.cached_list('full').length, 1, 'one item (b)');
+
     assert.equal(pup_tent.get('foo'), null, 'nothing for foo');
     assert.equal(pup_tent.get('trivial.tmpl'), 'name: {{ name }}',
 		 'tmpl string');

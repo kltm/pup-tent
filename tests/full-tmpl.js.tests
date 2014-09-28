@@ -26,6 +26,10 @@ var assert = require('assert');
     assert.equal(s, 'foo',  "content only");
     //console.log('html (s): ', s);
 
+    // Try again using full pathing.
+    var f = pup_tent.render('tests/rsrc3/content.tmpl', {content: 'foo'});
+    assert.equal(f, 'foo',  "content only (full)");
+
 })();
 
 // Long use of render().
@@ -94,6 +98,12 @@ var assert = require('assert');
     assert.equal(u.length, e.length,  "inner and outer template lengths");
     assert.equal(u, e,  "inner and outer templates");
     
+    // And let's give it a spin with full paths.
+    var f = pup_tent.render('tests/rsrc3/content.tmpl',
+			    {content: 'bar', title: 'foo',
+			    'pup_tent_js_libraries': ['App.js']},
+			    'tests/rsrc3/frame.tmpl');
+    assert.equal(f, e,  "inner and outer templates (full)");
 })();
 
 // Playing with the caching mechanism off: use_cache_p().
@@ -108,6 +118,11 @@ var assert = require('assert');
 
     var s = pup_tent.render('content.tmpl', {content: 'foo'});
     assert.equal(s, 'foo',  "content only, using a filesystem re-read");
+    //console.log('html (s): ', s);
+
+    // ...and use full path.
+    var f = pup_tent.render('tests/rsrc3/content.tmpl', {content: 'foo'});
+    assert.equal(f, 'foo',  "content only, using a filesystem re-read (full)");
     //console.log('html (s): ', s);
 
 })();
