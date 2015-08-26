@@ -1,19 +1,139 @@
-<html>
-  <body>
+<h1 id="pup-tent">pup-tent</h1>
+<p>File caching and template rendering femto-framework using mustache and some assumptions.</p>
+<p><a href="https://github.com/berkeleybop/pup-tent">On GitHub</a></p>
+<p><a href="https://www.npmjs.com/package/pup-tent">NPM</a></p>
+<p><a href="http://kltm.github.io/pup-tent/doc/index.html">API docs</a></p>
+<p>pup-tent is maintained by <a href="https://github.com/berkeleybop">Berkeley BOP</a> &amp; <a href="https://github.com/kltm">kltm</a></p>
+<h2 id="overview">Overview</h2>
+<p>Pup Tent is a femto-framework for template (Mustache) and static content delivery for Node.js and RingoJS (beta) web apps.</p>
+<p>The idea is to quickly turn a pile of related JS, template, CSS, and static files into a whole coherent enough to deliver with a proper web app/routing framework, such as express.</p>
+<p>There are two main aspects to Pup Tent. The first is searching for and synchronously caching static content on the filesystem, (including caching templates for later use), and then producing those when given the filename key (all filenames must be unique in Pup Tent). The second is aiding in using a couple of common template patterns using Mustache, examples below.</p>
+<h2 id="usage">Usage</h2>
+<h3 id="the-basics-kicking-the-tires-lightly">The Basics (kicking the tires, lightly)</h3>
+<p>There are other examples in the tests/ directory, but a full example (without using the cache) might look like this.</p>
+<p>Lets say you have the following files:</p>
+<ul>
+<li>static/frame.tmpl</li>
+<li>static/content.tmpl</li>
+<li>static/bar.css</li>
+<li>static/foo.js</li>
+<li>static/App.js</li>
+</ul>
+<p>The file content.tmpl looks like:</p>
+<pre><code>{{ content }}</code></pre>
+<p>And the file frame.tmpl looks like:</p>
+<pre class="sourceCode html"><code class="sourceCode html"><span class="kw">&lt;html&gt;</span>
+  <span class="kw">&lt;head&gt;</span>
+    <span class="kw">&lt;title&gt;</span>{{title}}<span class="kw">&lt;/title&gt;</span>
+    {{#pup_tent_css_libraries}}
+    <span class="kw">&lt;link</span><span class="ot"> rel=</span><span class="st">&quot;stylesheet&quot;</span><span class="ot"> type=</span><span class="st">&quot;text/css&quot;</span><span class="ot"> href=</span><span class="st">&quot;{{{.}}}&quot;</span><span class="kw">&gt;</span>
+    {{/pup_tent_css_libraries}}
+    {{#pup_tent_js_variables}}
+    <span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&quot;text/javascript&quot;</span><span class="kw">&gt;var</span> {{name}} = {{{value}}};<span class="kw">&lt;/script&gt;</span>
+    {{/pup_tent_js_variables}}
+    {{#pup_tent_js_libraries}}
+    <span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&quot;text/javascript&quot;</span><span class="ot"> src=</span><span class="st">&quot;{{{.}}}&quot;</span><span class="kw">&gt;&lt;/script&gt;</span>
+    {{/pup_tent_js_libraries}}
+  <span class="kw">&lt;/head&gt;</span>
+  <span class="kw">&lt;body&gt;</span>
+  {{ <span class="er">&amp;</span>pup_tent_content }}
+  <span class="kw">&lt;/body&gt;</span>
+<span class="kw">&lt;/html&gt;</span></code></pre>
+<p>The easiest way to deploy my App.js using this template and file structure could be something like:</p>
+<pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> pup_tent = <span class="fu">require</span>(<span class="st">&#39;pup-tent&#39;</span>)([<span class="st">&#39;static&#39;</span>]);</code></pre>
+<p>Set the common variables:</p>
+<pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="ot">pup_tent</span>.<span class="fu">set_common</span>(<span class="st">&#39;js_vars&#39;</span>, {<span class="st">&#39;name&#39;</span>: <span class="st">&#39;foo&#39;</span>, <span class="st">&#39;value&#39;</span>: <span class="st">&#39;bar&#39;</span>});
+<span class="ot">pup_tent</span>.<span class="fu">set_common</span>(<span class="st">&#39;js_libs&#39;</span>, <span class="st">&#39;foo.js&#39;</span>);
+<span class="ot">pup_tent</span>.<span class="fu">set_common</span>(<span class="st">&#39;css_libs&#39;</span>, <span class="st">&#39;bar.css&#39;</span>);</code></pre>
+<p>Set the variables for just this page:</p>
+<pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> targs = {<span class="dt">content</span>: <span class="st">&#39;bar&#39;</span>, <span class="dt">title</span>: <span class="st">&#39;foo&#39;</span>, <span class="st">&#39;pup_tent_js_libraries&#39;</span>: [<span class="st">&#39;App.js&#39;</span>]};</code></pre>
+<pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> output = <span class="ot">pup_tent</span>.<span class="fu">render</span>(<span class="st">&#39;content.tmpl&#39;</span>, targs, <span class="st">&#39;frame.tmpl&#39;</span>);</code></pre>
+<p>This would give output like:</p>
+<pre class="sourceCode html"><code class="sourceCode html"><span class="kw">&lt;html&gt;</span>
+  <span class="kw">&lt;head&gt;</span>
+    <span class="kw">&lt;title&gt;</span>foo<span class="kw">&lt;/title&gt;</span>
+    <span class="kw">&lt;link</span><span class="ot"> rel=</span><span class="st">&quot;stylesheet&quot;</span><span class="ot"> type=</span><span class="st">&quot;text/css&quot;</span><span class="ot"> href=</span><span class="st">&quot;bar.css&quot;</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&quot;text/javascript&quot;</span><span class="kw">&gt;var</span> foo = <span class="st">&quot;bar&quot;</span>;<span class="kw">&lt;/script&gt;</span>
+    <span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&quot;text/javascript&quot;</span><span class="ot"> src=</span><span class="st">&quot;foo.js&quot;</span><span class="kw">&gt;&lt;/script&gt;</span>
+    <span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&quot;text/javascript&quot;</span><span class="ot"> src=</span><span class="st">&quot;App.js&quot;</span><span class="kw">&gt;&lt;/script&gt;</span>
+  <span class="kw">&lt;/head&gt;</span>
+  <span class="kw">&lt;body&gt;</span>
+  bar
+  <span class="kw">&lt;/body&gt;</span>
+<span class="kw">&lt;/html&gt;</span></code></pre>
+<p>You might notice that some of the files are not correctly &quot;linking&quot; if you view your page in a web browser. On to the next section!</p>
+<h3 id="more-advanced-test-drive">More Advanced (test drive)</h3>
+<p>So far, we've just used it for some simple templating, but what if we want to use the integrated caching mechanism and use it in conjunction with something like express?</p>
+<p>A more full-bodied example, using express as an example, might be:</p>
+<pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> us = <span class="fu">require</span>(<span class="st">&#39;underscore&#39;</span>);
+<span class="kw">var</span> express = <span class="fu">require</span>(<span class="st">&#39;express&#39;</span>);
+<span class="kw">var</span> fs = <span class="fu">require</span>(<span class="st">&#39;fs&#39;</span>);
+<span class="kw">var</span> mustache = <span class="fu">require</span>(<span class="st">&#39;mustache&#39;</span>)
+<span class="kw">var</span> pup_tent = <span class="fu">require</span>(<span class="st">&#39;pup-tent&#39;</span>)
 
-    <p>
-      <a href="https://github.com/kltm/pup-tent/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-      <a href="https://github.com/kltm/pup-tent/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-      <a href="https://github.com/kltm/pup-tent" id="view-on-github" class="button"><span>View on GitHub</span></a>
-    </p>
+<span class="kw">var</span> app = <span class="fu">express</span>();
 
-    <p>
-      <a href="http://kltm.github.io/pup-tent/docs/index.html">API</a>
-    </p>
+<span class="co">//////</span>
+<span class="co">/// FOLLOW THE EXAMPLE ABOVE FOR REDACTED STUFF HERE ///</span>
+<span class="co">//////</span>
 
-    <footer>
-      Pup Tent is maintained by <a href="https://github.com/kltm">kltm</a><br>
-    </footer>
+<span class="co">// Pretty much the same as before.</span>
+<span class="ot">app</span>.<span class="fu">get</span>(<span class="st">&#39;/&#39;</span>, <span class="kw">function</span>(req, res){
+    <span class="kw">var</span> targs = {
+    <span class="st">&#39;title&#39;</span>: <span class="st">&#39;Testing&#39;</span>
+    };
+    <span class="kw">var</span> output = <span class="ot">pup_tent</span>.<span class="fu">render</span>(<span class="st">&#39;content.tmpl&#39;</span>, targs, <span class="st">&#39;frame.tmpl&#39;</span>);
+    <span class="ot">res</span>.<span class="fu">send</span>(output);
+});
+
+<span class="co">// Cached static routes, using Pup Tent to easily deliver static docs.</span>
+<span class="kw">var</span> js_re = <span class="ot">/</span><span class="fl">\.</span><span class="ot">js</span><span class="fl">$</span><span class="ot">/</span>;
+<span class="kw">var</span> css_re = <span class="ot">/</span><span class="fl">\.</span><span class="ot">css</span><span class="fl">$</span><span class="ot">/</span>;
+<span class="kw">var</span> html_re = <span class="ot">/</span><span class="fl">\.</span><span class="ot">html</span><span class="fl">$</span><span class="ot">/</span>;
+<span class="co">// Routes for all static cache items at top-level.</span>
+<span class="ot">us</span>.<span class="fu">each</span>(<span class="ot">pup_tent</span>.<span class="fu">cached_list</span>(<span class="st">&#39;flat&#39;</span>), <span class="kw">function</span>(thing){
+    <span class="kw">var</span> ctype = <span class="kw">null</span>;
+    <span class="kw">if</span>( <span class="ot">js_re</span>.<span class="fu">test</span>(thing) ){
+        ctype = <span class="st">&#39;text/javascript&#39;</span>;
+    }<span class="kw">else</span> <span class="kw">if</span>( <span class="ot">css_re</span>.<span class="fu">test</span>(thing) ){
+        ctype = <span class="st">&#39;text/css&#39;</span>;
+    }<span class="kw">else</span> <span class="kw">if</span>( <span class="ot">html_re</span>.<span class="fu">test</span>(thing) ){
+        ctype = <span class="st">&#39;text/html&#39;</span>;
+    }
     
-  </body>
-</html>
+    <span class="co">// This will skip cached templates.</span>
+    <span class="kw">if</span>( ctype !== <span class="kw">null</span> ){
+        <span class="ot">app</span>.<span class="fu">get</span>(<span class="st">&#39;/&#39;</span> + thing, <span class="kw">function</span>(req, res) {
+            <span class="ot">res</span>.<span class="fu">setHeader</span>(<span class="st">&#39;Content-Type&#39;</span>, ctype);
+            <span class="ot">res</span>.<span class="fu">send</span>(<span class="ot">pup_tent</span>.<span class="fu">get</span>(thing) );
+        });
+    }
+});
+
+<span class="kw">var</span> server = <span class="ot">app</span>.<span class="fu">listen</span>(<span class="dv">3333</span>, <span class="kw">function</span>() {
+    <span class="ot">console</span>.<span class="fu">log</span>(<span class="st">&#39;Starting at http://localhost:&#39;</span> +
+        <span class="ot">server</span>.<span class="fu">address</span>().<span class="fu">port</span>);
+});</code></pre>
+<p>Since always caching can be a bit annoying when developing JavaScript/CSS heavy websites, there is also a use_cache_p() function that can be used to toggle whether Pup Tent returns to the filesystem every time or uses the internal cache. For more information about everything, see the API docs (linked at the end).</p>
+<h3 id="special-variables">Special variables</h3>
+<p>The special stack variables are:</p>
+<ul>
+<li>css_libs: will map to pup_tent_css_libraries</li>
+<li>js_vars: will map to pup_tent_js_variables</li>
+<li>js_libs: will map to pup_tent_js_libraries</li>
+</ul>
+<p>The special template variables are:</p>
+<ul>
+<li>pup_tent_css_libraries: list of CSS files to use</li>
+<li>pup_tent_js_libraries: list of JS files to use</li>
+<li>pup_tent_js_variables: list of name/value objects to convert to vaiables</li>
+<li>pup_tent_content: meant for use in <em>base</em>tmpl_name_ to embed one template in another</li>
+</ul>
+<h2 id="tests">Tests</h2>
+<h3 id="node.js">Node.js</h3>
+<pre><code>Given the right environment, the tests can be easily run from the
+command line using the gulpfile.js.</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">gulp</span> test</code></pre>
+<h3 id="ringojs">RingoJS</h3>
+<p>The RingoJS tests are not integrated with the Makefile (yet), but can be run from the command line interface like:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">ringo</span> -m ./lib -m ./node_modules/underscore/ -m node_modules/mustache tests/full-tmpl.js.tests</code></pre>
