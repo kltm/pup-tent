@@ -1,6 +1,6 @@
 {
     "name": "pup-tent",
-    "version": "0.9.7",
+    "version": "0.9.8",
     "license": "BSD-3-Clause",
     "description": "File caching and template rendering femto-framework using mustache and some assumptions.",
     "author": {
